@@ -14,6 +14,7 @@ puppeteer.use(StealthPlugin());
     // Navigate to the signup page  
     await page.goto('https://www.hilton.com/en/hilton-honors/join/?OCODE=OHWBW', { timeout: 150000 }); // Replace with the actual signup URL
 
+    await page.waitForSelector(".form-input");
     const firstName = 'xpath/' + '/html/body/div[1]/div/main/div/div/div/form/div[1]/label/input';
     const lastName = 'xpath/' + '/html/body/div[1]/div/main/div/div/div/form/div[2]/label/input';
     const phoneSel = 'xpath/' + '/html/body/div[1]/div/main/div/div/div/form/div[3]/div[2]/label/span[2]/select';
@@ -29,39 +30,40 @@ puppeteer.use(StealthPlugin());
     await page.waitForSelector('.form-input');
     await page.type(password, 'Smith1234', { delay: "100" });
     await page.type(passwordConfirm, 'Smith1234', { delay: "100" });
-    await page.type(address, '4731 E Olympic Blvd', { delay: "100" });
-    await page.type(zipcode, '90022', { delay: "100" });
     await page.type(firstName, 'Smith', { delay: "100" });
     await page.type(lastName, 'Smith', { delay: "100" });
     await page.type(phoneInput, '234244533', { delay: "100" });
-    await page.type(email, 'Smith124sdf@sdfds.ca', { delay: "100" });
+    await page.type(email, 'rosennj@yahoo.com', { delay: "100" });
+    await page.type(address, '4731 E Olympic Blvd', { delay: "100" });
+    await page.type(zipcode, '90022', { delay: "100" });
 
-    // // Phone Selection
-    // await page.waitForSelector('.form-select'); // Adjust the selector if needed
+    // Phone Selection
+    await page.waitForSelector('select[name="phone\\.phoneCountry"]'); // Adjust the selector if needed
+    // Get the select element handle
+    const selectPhone = await page.$('select[name="phone\\.phoneCountry"]');
+    if (!selectPhone) {
+        throw new Error('Select element not found');
+    }
 
-    // // Get the select element handle
-    // const selectHandle = await page.$('select["name=phone\\.phoneCountry"]');
-    // if (!selectHandle) {
-    //     throw new Error('Select element not found');
-    // }
+    const options = await selectPhone.$$('option');
+    // Specify the text of the option you want to select
+    const visibleText = 'United Kingdom'; // Change this to the option you want to select
+    //if(data.Country == 'United States') visibleText += ' of America';
 
-    // // Get all option elements
-    // const options = await selectHandle.$$('option');
-    // // Specify the text of the option you want to select
-    // const visibleText = 'United Kingdom'; // Change this to the option you want to select
-    // //if(data.Country == 'United States') visibleText += ' of America';
-    // // Loop through options to find the one with the specified text
-    // for (const option of options) {
-    //     const textOrigin = await option.evaluate(el => el.textContent.trim()).split(' ').slice(1).join(' ');
-    //     // const text = textOrigin.split(' ').slice(1).join(' ');
-    //     if (text === visibleText) {
-    //         console.log("country: ", text);
-    //         await option.evaluate(el => el.selected = true); // Select the option
-    //         await selectHandle.evaluate(el => el.dispatchEvent(new Event('change', { bubbles: true }))); // Trigger change event
-    //         break;
+    for (const option of options) {
+        const textOrigin = await option.evaluate(el => el.textContent.trim());
+        const text = textOrigin.split(' ').slice(1).join(' ');
+        if (text === visibleText) {
+            await new Promise(resolve => setTimeout(resolve, 5000));
+            console.log("country: ", text);
+            await option.evaluate(el => el.selected = true); // Select the option
+            await selectPhone.evaluate(el => el.dispatchEvent(new Event('change', { bubbles: true }))); // Trigger change event
+            break;
 
-    //     }
-    // }
+        }
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 2000));
 
     // Country Selection
     await page.waitForSelector('.form-select'); // Adjust the selector if needed
@@ -75,18 +77,20 @@ puppeteer.use(StealthPlugin());
     const countryOption = await countrySelect.$$('option');
 
     // Specify the text of the option you want to select
-    const visibleText1 = 'United kingdom'; // Change this to the option you want to select
+    const visibleText1 = 'United Kingdom'; // Change this to the option you want to select
     //if(data.Country == 'United States') visibleText += ' of America';
     // Loop through options to find the one with the specified text
     for (const option of countryOption) {
         const text = await option.evaluate(el => el.textContent.trim());
         if (text === visibleText1) {
             await option.evaluate(el => el.selected = true); // Select the option
-            await countryOption.evaluate(el => el.dispatchEvent(new Event('change', { bubbles: true }))); // Trigger change event
+            await countrySelect.evaluate(el => el.dispatchEvent(new Event('change', { bubbles: true }))); // Trigger change event
             break;
         }
     }
 
+
+    await page.waitForSelector('button')
     await Promise.all([
         page.click('button[type="submit"]'), // Replace with the correct selector for the submit button  
         page.waitForNavigation({ waitUntil: 'networkidle0' }), // Wait for the navigation after form submission  
@@ -94,6 +98,6 @@ puppeteer.use(StealthPlugin());
 
     await browser.close();
 
-}) ();
+})();
 
 // module.exports = {SignupHilton};
