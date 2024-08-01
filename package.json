@@ -12,9 +12,9 @@
   "description": "",
   "dependencies": {
     "node-telegram-bot-api": "^0.66.0",
-    "puppeteer": "^22.14.0",
+    "puppeteer": "^22.15.0",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
-    "user-agents": "^1.1.279"
+    "user-agents": "^1.1.283"
   }
 }

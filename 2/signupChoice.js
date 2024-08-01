@@ -16,12 +16,12 @@ async function SignupChoice(data) {
     await page.goto('https://www.ihg.com/rewardsclub/us/en/enrollment/join?scmisc=WEB-_-6C-_-GLO-_-EN-_-LOY-_-IHGRHome-_-Join-_-MB-_-NonMembers', { timeout: 60000 }); // Replace with the actual signup URL
 
     await page.waitForSelector('#firstName')
-    await page.type('#firstName', 'Smith', { delay: "100" });
-    await page.type('#lastName', 'John', { delay: "100" });
-    await page.type('#email', 'hello6.world12@yahoo.com', { delay: "100" });
-    await page.type('#confirmEmail', 'hello6.world12@yahoo.com', { delay: "100" });
-    await page.type('#password', 'Password612', { delay: "100" });
-    await page.type('#confirmPassword', 'Password612', { delay: "100" });
+    await page.type('#firstName', data.Firstname, { delay: "100" });
+    await page.type('#lastName', data.Lastname, { delay: "100" });
+    await page.type('#email', data.Email, { delay: "100" });
+    await page.type('#confirmEmail', data.Email, { delay: "100" });
+    await page.type('#password', data.Password, { delay: "100" });
+    await page.type('#confirmPassword', data.Password, { delay: "100" });
 
 
     await page.waitForSelector('#country'); // Adjust the selector if needed
@@ -32,7 +32,7 @@ async function SignupChoice(data) {
         throw new Error('Select element not found');
     }
     const options = await selectHandle.$$('option');
-    const visibleText = 'United States'; // Change this to the option you want to select
+    const visibleText = data.Country; // Change this to the option you want to select
 
     for (const option of options) {
         const text = await option.evaluate(el => el.textContent.trim());
@@ -44,11 +44,11 @@ async function SignupChoice(data) {
     }
 
 
-    await page.type('#address1', '4731 E Olympic Blvd', { delay: "50" });
-    await page.type('#city', 'Los Angeles', { delay: "50" });
+    await page.type('#address1', data.Address, { delay: "50" });
+    await page.type('#city', data.City, { delay: "50" });
 
     // State Selection
-    const visibleText1 = 'California';
+    const visibleText1 = data.State;
     await page.waitForSelector('#stateList'); // Adjust the selector if needed
 
     // Get the select element handle
@@ -68,7 +68,7 @@ async function SignupChoice(data) {
         }
     }
 
-    await page.type('#zipCode', '90022', { delay: "50" });
+    await page.type('#zipCode', data.Zipcode, { delay: "50" });
     const check1 = 'xpath/' + '/html/body/div[1]/div/div/app-enrollment/div/app-enrollment/app-enrollment-view/div[1]/div[2]/div/div/app-terms-and-conditions/div/form/div[1]/div/div';
     const check2 = 'xpath/' + '/html/body/div[1]/div/div/app-enrollment/div/app-enrollment/app-enrollment-view/div[1]/div[2]/div/div/app-terms-and-conditions/div/form/div[2]/div/div';
     await page.click(check1);
