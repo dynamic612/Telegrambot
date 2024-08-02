@@ -61,7 +61,7 @@ bot.onText(/\/help/, (msg) => {
 
 bot.onText(/\/register/, (msg) => {
     const chatId = msg.chat.id;
-    bot.sendMessage(chatId, "Please register your personal info like below.\n\nfirstname, lastname, gender, birthday, address, city, state, country, zipcode, email, phone, cpn, job, password, username, secword1, secword2");
+    bot.sendMessage(chatId, "Please register your personal info like below.\n\nfirstname, lastname, gender, birthday, address, city, state, country, zipcode, email, phone, cpn, job, password, username, Answer");
     registerflag = true;
 })
 
@@ -83,7 +83,10 @@ bot.on('message', (msg) => {
                 personalInfo.Phone_Number = items[10]; 
                 personalInfo.CPN = items[11]; 
                 personalInfo.Job = items[12];
-                personalInfo.Password = items[13];                   
+                personalInfo.Password = items[13];
+                personalInfo.Username = items[14];                   
+                personalInfo.Answer = items[15];                   
+
 
         const reply = formatUserData(personalInfo);
         bot.sendMessage(chatId, `This is your personal Info you have just typed.\n\n${reply}`);
@@ -96,14 +99,18 @@ function formatUserData(data) {
     .map(([key, value]) => `${key}:\t\t${value}`).join('\n');
 }
 
-bot.onText(/\/signup/, (msg) => {
+bot.onText(/\/signup1/, (msg) => {
     const chatId = msg.chat.id;
     bot.sendMessage(chatId, "Wait a sec.");
     SignupTrueBlue(personalInfo);
     SignupAA(personalInfo);
-    // SignupDelta(personalInfo);
-    // SignupHilton(personalInfo);
-    // SignupMarriott(personalInfo);
-    // SignupChoice(personalInfo);
+    SignupDelta(personalInfo);
 })
 
+bot.onText(/\/signup2/, (msg) => {
+    const chatId = msg.chat.id;
+    bot.sendMessage(chatId, "Wait a sec.");
+    SignupHilton(personalInfo);
+    SignupMarriott(personalInfo);
+    SignupChoice(personalInfo);
+})
