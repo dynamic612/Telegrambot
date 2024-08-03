@@ -35,7 +35,9 @@ puppeteer.use(pluginStealth());
         await Promise.all([
             await page.click(button),
             page.waitForNavigation({ timeout: 30000 })
+
         ]);
+        await browser.close();
     } catch {
         console.error('An error occurred:', error)
         await browser.close();
