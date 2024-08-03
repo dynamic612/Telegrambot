@@ -11,7 +11,7 @@ async function SignupAA(data) {
     const browser = await puppeteer.launch({ headless: false, executablePath: executablePath() }); // Set headless to true to run without UI  
     const page = await browser.newPage();
     await page.setUserAgent(userAgent.random().toString())
-    await page.setDefaultTimeout(100000);
+    await page.setDefaultTimeout(50000);
     try {
         // Navigate to the signup page  
         await page.goto('https://www.aa.com/loyalty/enrollment/enroll'); // Replace with the actual signup URL
@@ -27,7 +27,7 @@ async function SignupAA(data) {
         //Birthday
         await page.waitForSelector('select[id="personalInformationForm\\.dateOfBirth\\.month"]');
         const birthday = data.Birthday;
-        const numbers = birthday.split('-').map(Number);
+        const numbers = birthday.split('/').map(Number);
 
         //await page.waitForSelector('#personalInformationForm\\.dateOfBirth\\.month'); // Adjust the selector if needed
         await page.select('select[id="personalInformationForm\\.dateOfBirth\\.month"]', `${numbers[1]}`); // Replace with the correct selector and value
@@ -67,37 +67,33 @@ async function SignupAA(data) {
                 break;
             }
         }
-        async function stateif(country) {
-            if (country == "United States" || country == "Canada") {
-                // state Selection
-                await page.waitForSelector('#addressInformationForm\\.usState'); // Adjust the selector if needed
 
-                // Get the select element handle
-                const selectHandle1 = await page.$('#addressInformationForm\\.usState');
-                if (!selectHandle1) {
-                    throw new Error('Select element not found');
-                }
+        // state Selection
+        await page.waitForSelector('#addressInformationForm\\.usState'); // Adjust the selector if needed
 
-                // Get all option elements
-                const options1 = await selectHandle1.$$('option');
+        // Get the select element handle
+        const selectHandle1 = await page.$('#addressInformationForm\\.usState');
+        if (!selectHandle1) {
+            throw new Error('Select element not found');
+        }
 
-                // Specify the text of the option you want to select
-                const visibleText1 = data.State; // Change this to the option you want to select
+        // Get all option elements
+        const options1 = await selectHandle1.$$('option');
 
-                // Loop through options to find the one with the specified text
-                for (const option of options1) {
-                    const text = await option.evaluate(el => el.textContent.trim());
-                    if (text === visibleText1) {
-                        await option.evaluate(el => el.selected = true); // Select the option
-                        await selectHandle1.evaluate(el => el.dispatchEvent(new Event('change', { bubbles: true }))); // Trigger change event
-                        break;
-                    }
-                }
+        // Specify the text of the option you want to select
+        const visibleText1 = data.State; // Change this to the option you want to select
 
+        // Loop through options to find the one with the specified text
+        for (const option of options1) {
+            const text = await option.evaluate(el => el.textContent.trim());
+            if (text === visibleText1) {
+                console.log(text);
+                await option.evaluate(el => el.selected = true); // Select the option
+                await selectHandle1.evaluate(el => el.dispatchEvent(new Event('change', { bubbles: true }))); // Trigger change event
+                break;
             }
         }
 
-        await stateif(data.Country);
 
         // phone Selection
         await page.waitForSelector('#emailPhoneForm\\.phones0\\.countryCode'); // Adjust the selector if needed

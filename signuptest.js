@@ -9,6 +9,7 @@ const puppeteer = require('puppeteer');
     // Navigate to the signup page  
     await page.goto('https://trueblue.jetblue.com/enroll/sign-up'); // Replace with the actual signup URL  
 
+    await page.bringToFront();
     // Fill in the signup form  
     await page.type('input[id="fname"]', 'Steven'); // Replace with the correct selector and value 
 

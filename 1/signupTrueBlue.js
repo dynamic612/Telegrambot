@@ -8,7 +8,7 @@ async function SignupTrueBlue(data) {
     // Launch a new browser instance
     const browser = await puppeteer.launch({ headless: false }); // Set headless to true to run without UI  
     const page = await browser.newPage();
-    await page.setDefaultTimeout(100000);
+    await page.setDefaultTimeout(50000);
 
     // Navigate to the signup page  
     await page.goto('https://trueblue.jetblue.com/enroll/sign-up', { timeout: 50000 }); // Replace with the actual signup URL  
@@ -24,7 +24,7 @@ async function SignupTrueBlue(data) {
         await page.click('#fname');
 
         const birthday = data.Birthday;
-        const numbers = birthday.split('-').map(Number);
+        const numbers = birthday.split('/').map(Number);
 
         await page.select('#bday1SelectDesktop', String(numbers[1])); // Replace with the correct selector and value  
         await page.select('select#bday2SelectDesktop', String(numbers[2])); // Replace with the correct selector and value  
@@ -35,6 +35,7 @@ async function SignupTrueBlue(data) {
             page.click('button[type="submit"]'), // Replace with the correct selector for the submit button  
             page.waitForNavigation({ waitUntil: 'networkidle0' }), // Wait for the navigation after form submission  
         ]);
+        await new Promise(resolve => setTimeout(resolve, 2000));
 
         const address = '/html/body/mp-root/div[1]/app-quick-enroll-process/div/mp-join-us/mp-enrollment-step2/div[2]/form/div/div[2]/mp-address-section/loqate-form-input-select/div/input';
         await page.type('xpath/' + address, data.Address, { delay: "50" });
@@ -70,7 +71,7 @@ async function SignupTrueBlue(data) {
         const options = await selectHandle.$$('option');
 
         // Specify the text of the option you want to select
-        const visibleText = data.Country; // Change this to the option you want to select
+        let visibleText = data.Country; // Change this to the option you want to select
         if (data.Country == 'United States') visibleText += ' of America';
         console.log(visibleText);
         // Loop through options to find the one with the specified text
@@ -117,7 +118,6 @@ async function SignupTrueBlue(data) {
 
 
         await page.keyboard.press('Tab', { delay: "10000" });
-        await page.keyboard.press('Tab', { delay: "100" });
         await page.keyboard.press('Tab', { delay: "100" });
         await page.keyboard.press('Tab', { delay: "100" });
         await page.keyboard.press('Tab', { delay: "100" });

@@ -12,28 +12,44 @@ async function SignupDelta(data) {
     // Launch a new browser instance
     const browser = await puppeteer.launch({ headless: false, executablePath: executablePath() }); // Set headless to true to run without UI  
     const page = await browser.newPage();
-    await page.setDefaultTimeout(100000);
+    await page.setDefaultTimeout(60000);
     await page.setUserAgent(userAgent.random().toString())
-
-    await page.goto('https://www.delta.com/', { timeout: 90000 }); // Replace with the actual signup URL
-    // Navigate to the signup page  
-
-    await page.goto('https://www.delta.com/join-skymiles/', { timeout: 90000 });
-
     try {
+        await page.goto('https://www.delta.com/', { timeout: 90000 }); // Replace with the actual signup URL
+
+        await page.goto('https://www.delta.com/join-skymiles/', { timeout: 90000 });
+        await new Promise(resolve => setTimeout(resolve, 20000));
+
+        // Navigate to the signup page  
+        const understand = 'xpath/' + '/html/body/ngc-cookie-banner/div/div/div/div[2]/button';
+        await page.click(understand);
+
+        // await page.keyboard.press('Tab', { delay: "100" });
+        // await page.keyboard.press('Tab', { delay: "100" });
+        // await page.keyboard.press('Tab', { delay: "100" });
+        // await page.keyboard.press('Tab', { delay: "100" });
+
+        await page.keyboard.press('Enter');
         //Birthday
+
+
         const birthday = data.Birthday;
-        const numbers = birthday.split('-').map(Number);
+        const numbers = birthday.split('/').map(Number);
         await page.waitForSelector('#idp-month__selected');
         await page.click('#idp-month__selected'); // Replace with the correct selector and value
         await page.waitForSelector(`#monthoption-${numbers[1]}`);
         await page.click(`#monthoption-${numbers[1]}`); // Replace with the correct selector and value
+
         await page.click('#idp-date__selected'); // Replace with the correct selector and value
-        await page.waitForSelector(`#monthoption-${numbers[2]}`);
-        await page.click(`#monthoption-${numbers[2]}`); // Replace with the correct selector and value
+        await page.waitForSelector(`#dateoption-${numbers[2]}`);
+        await page.click(`#dateoption-${numbers[2]}`); // Replace with the correct selector and value
+
         await page.click('#idp-year__selected'); // Replace with the correct selector and value
-        await page.waitForSelector(`#yearoption-${numbers[0]}`);
-        await page.click(`#yearoption-${numbers[0]}`); // Replace with the correct selector and value
+        const year = 2025 - Number(numbers[0]);
+        console.log(year);
+
+        await page.waitForSelector(`#yearoption-${year}`);
+        await page.click(`#yearoption-${year}`); // Replace with the correct selector and value
 
         async function genderif(gender) {
 
@@ -48,17 +64,19 @@ async function SignupDelta(data) {
         }
 
         genderif(data.Gender);
+        await new Promise(resolve => setTimeout(resolve, 3000));
 
         // Type firstName and lastName
         await page.waitForSelector('.idp-input')
         const mName = 'xpath/' + '/html/body/idp-root/div[2]/idp-enrollment/idp-enrollment-page/idp-standard-enrollment/body/div[1]/idp-form/div/div[1]/fieldset/div/idp-form-fields/form/div[2]/idp-input/div/div/input';
         await page.type(mName, ' ', { delay: "3000" });
         const fName = 'xpath/' + '/html/body/idp-root/div[2]/idp-enrollment/idp-enrollment-page/idp-standard-enrollment/body/div[1]/idp-form/div/div[1]/fieldset/div/idp-form-fields/form/div[1]/idp-input/div/div/input';
-        await page.type(fName, 'Wiilam', { delay: "100" });
+        await page.type(fName, data.Firstname, { delay: "100" });
         const lName = 'xpath/' + '/html/body/idp-root/div[2]/idp-enrollment/idp-enrollment-page/idp-standard-enrollment/body/div[1]/idp-form/div/div[1]/fieldset/div/idp-form-fields/form/div[3]/idp-input/div/div/input';
-        await page.type(lName, 'Steve', { delay: "150" });
+        await page.type(lName, data.Lastname, { delay: "150" });
         await page.click(mName);
         await page.keyboard.press('Backspace');
+
 
         await Promise.all([
             await page.click('#basic-info-next'),
@@ -121,17 +139,15 @@ async function SignupDelta(data) {
         await page.type(email2, data.Email, { delay: "100" });
 
         const check = '/html/body/idp-root/div[2]/idp-enrollment/idp-enrollment-page/idp-standard-enrollment/body/div[1]/idp-form/div/div[2]/fieldset/div/idp-form-fields/form/fieldset[3]/div[3]/div/idp-checkbox-standard/div/div/label/span[3]';
-        await page.click('xpath/' + check);
-        await page.keyboard.press('Tab', { delay: "1000" });
-        await page.keyboard.press('Tab', { delay: "1000" });
-        await page.keyboard.press('Enter', { delay: "1000" });
+        // await page.click('xpath/' + check);
+
 
         await Promise.all([
             await page.click('#contact-info-next'),
         ]);
 
         await page.waitForSelector('.idp-input');
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise(resolve => setTimeout(resolve, 5000));
         const userName = 'xpath/' + '/html/body/idp-root/div[2]/idp-enrollment/idp-enrollment-page/idp-standard-enrollment/body/div[1]/idp-form/div/div[3]/fieldset/div/idp-form-fields/form/fieldset[1]/div/idp-input/div/div/input';
         await page.type(userName, data.Username);
 
@@ -140,6 +156,7 @@ async function SignupDelta(data) {
         const passwordC = 'xpath/' + '/html/body/idp-root/div[2]/idp-enrollment/idp-enrollment-page/idp-standard-enrollment/body/div[1]/idp-form/div/div[3]/fieldset/div/idp-form-fields/form/fieldset[2]/div[2]/div/idp-input/div/div/input';
         await page.click(password);
         await page.type(password, data.Password, { delay: "100" });
+        await new Promise(resolve => setTimeout(resolve, 2000));
         await page.type(passwordC, data.Password, { delay: "100" });
 
 

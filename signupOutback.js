@@ -20,21 +20,34 @@ puppeteer.use(pluginStealth());
     await page.keyboard.press('Tab', { delay: "100" });
     await page.keyboard.press('Tab', { delay: "100" });
     await page.keyboard.press('Tab', { delay: "100" });
-
     await page.keyboard.press('Enter');
 
-    await page.waitForSelector('#btn_signUp');
-    await page.click('#btn_signUp');
+    await page.keyboard.press('Tab', { delay: "1000" });
+    await page.keyboard.press('Tab', { delay: "1000" });
+    await page.keyboard.press('Tab', { delay: "1000" });
+    await page.keyboard.press('Tab', { delay: "1000" });
+    await page.keyboard.press('Tab', { delay: "1000" });
+    await page.keyboard.press('Tab', { delay: "1000" });
+    await page.keyboard.press('Tab', { delay: "2000" });
+    await page.keyboard.press('Tab', { delay: "1000" });
+    await page.keyboard.press('Tab', { delay: "1000" });
 
+    await page.keyboard.press('Enter', {delay: "1000"});
+
+    await page.waitForNavigation({ waitUntil: 'networkidle0'});
     await page.waitForSelector('#signup-email');
-    await page.type('#signup-email', 'sdfser321sd@gmail.com');
-    await page.type('#signup-password', '90022');
-    await page.type('#confirm-password', '90022');
-    await page.type('#firstname', 'Harry');
-    await page.type('#lastname', 'Poter');
-    await page.type('#phonenumber','2345342345');
-    await page.click('fieldset');
-    await page.type('fieldset', '06121984');
+
+    await new Promise(resolve => setTimeout(resolve, 35000));
+
+    await page.type('#signup-email', 'sdfser321sd@gmail.com', {delay:"1000"});
+    await page.type('#signup-password', '90022P@ssword', {delay:"100"});
+    await page.type('#confirm-password', '90022P@ssword', {delay:"100"});
+    await page.type('#firstname', 'Harry', {delay:"100"});
+    await page.type('#lastname', 'Poter', {delay:"100"});
+    await page.type('#phonenumber','2345342345', {delay:"100"});
+    await page.type('input[type="date"]', '06121984', {delay:"100"});
+
+    // await page.click('#content');
    
 
     await Promise.all([

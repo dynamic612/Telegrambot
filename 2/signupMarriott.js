@@ -13,32 +13,36 @@ async function SignupMarriott(data) {
   const page = await browser.newPage();
   await page.setUserAgent(userAgent.random().toString());
 
-  // Navigate to the signup page  
-  await page.goto('https://www.marriott.com/', { timeout: 60000 }); // Replace with the actual signup URL
-  await page.goto('https://www.marriott.com/loyalty/createAccount/createAccountPage1.mi', { timeout: 60000 })
+  try { // Navigate to the signup page  
+    await page.goto('https://www.marriott.com/', { timeout: 60000 }); // Replace with the actual signup URL
+    await page.goto('https://www.marriott.com/loyalty/createAccount/createAccountPage1.mi', { timeout: 60000 })
 
-  try {// Get the select element handle
+    // Get the select element handle
     await page.waitForSelector('.selectric-wrapper')
     await page.click('.selectric-wrapper');
-    // Use XPath with the variable to find the element  
-    await page.evaluate(() => {
-      const elements = document.querySelectorAll('li');
-      elements.forEach((element) => {
-        if (element.textContent.includes('United Kingdom')) {
-          element.click();
-        }
-      });
-    });
+    // Use XPath with the variable to find the element 
+
+    // if(data.Country == 'United States') {
+    //   text = 'USA';
+    // } 
+    // await page.evaluate(() => {
+    //   const elements = document.querySelectorAll('li');
+    //   elements.forEach((element) => {
+    //     if (element.textContent == text) {
+    //       element.click();
+    //     }
+    //   });
+    // });
 
     await new Promise(resolve => setTimeout(resolve, 2000));
 
     await page.waitForSelector('#field-first-name')
-    await page.type('#field-first-name', 'Smith', { delay: "100" });
-    await page.type('#field-last-name', 'John', { delay: "100" });
-    await page.type('#field-postal', '90022', { delay: "100" });
-    await page.type('#field-email', 'sdfs234sdf@uolsd.sls', { delay: "100" });
-    await page.type('#field-password', 'Password612', { delay: "100" });
-    await page.type('#field-password-confirmation', 'Password612', { delay: "100" });
+    await page.type('#field-first-name', data.Firstname, { delay: "100" });
+    await page.type('#field-last-name', data.Lastname, { delay: "100" });
+    await page.type('#field-postal', data.Zipcode, { delay: "100" });
+    await page.type('#field-email', data.Email, { delay: "100" });
+    await page.type('#field-password', data.Password, { delay: "100" });
+    await page.type('#field-password-confirmation', data.Password, { delay: "100" });
 
 
 
